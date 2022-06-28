@@ -1,0 +1,28 @@
+.wrapper {
+  max-width: 70rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  display: grid;
+  grid-template-columns: 256px 1fr;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/*Quando o tamanho da minha tela for menor que 768px ele vai vai aplicar esse CSS ai de baixo*/
+@media (max-width: 768px) {
+  html {
+    font-size: 87.5%;
+  }
+
+  .wrapper {
+    grid-template-columns: 1fr
+  }
+}
+
+/*
+  16 -> 100%
+  14 -> x
+
+  A conta fica 14*100/16 para emcontrar o percentual de 14px
+*/
