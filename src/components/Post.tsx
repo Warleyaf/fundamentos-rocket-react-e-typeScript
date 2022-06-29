@@ -1,13 +1,32 @@
 import {format, formatDistanceToNow} from 'date-fns'; // adicionando a biblioteca de formataçãode datas que é o date-fns
 import ptBr from 'date-fns/locale/pt-BR' 
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 
 import { Avatar } from './Avatar';
 import { Comment } from './Comment';
 import styles from './Post.module.css';
 
 //ao invés de utilizar o props eu irei utilizar a desestruturação no lugar de props
-export function Post({author, publishedAt, content}) { // dessa forma ai que uso a desestruturação
+
+
+interface Author {
+  name: string;
+  role: string;
+  avatarUrl: string;
+}
+
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
+
+interface PostProps { //typscript
+  author: Author;
+  publishedAt: Date;
+  content: Content[];
+}
+// e dessa forma ai eu aplico o type script em um objeto de props
+export function Post({author, publishedAt, content}: PostProps) { // dessa forma ai que uso a desestruturação
 
   const [comments, setComments] = useState([
     'Post muito legal o seu comentário!!'
@@ -25,7 +44,7 @@ export function Post({author, publishedAt, content}) { // dessa forma ai que uso
     addSuffix: true, // aqui meio que vai colocar o "há 8 dias" no para dizer quanto tempo foi publicado a minha postagem
   })
 
-  const handleCreateNewComment = () => { // por padrão quando fazemos um submit no formulário do HTML, ele faz com que redirecione o usuário para uma página, mas queremos evitar isso, e pra fazer que um eventos padrão seja usado, utilizamos o event.preventDefault()
+  const handleCreateNewComment = (event: FormEvent) => { // por padrão quando fazemos um submit no formulário do HTML, ele faz com que redirecione o usuário para uma página, mas queremos evitar isso, e pra fazer que um eventos padrão seja usado, utilizamos o event.preventDefault()
     event.preventDefault()
 
     setComments([...comments, newCommentText]); // aqui estou utilizando o spread operator que é ler os valores que ja existia e copia, e depois uso o comments.length + 1 que vai ler as posições do array e acrescentar mais 1
@@ -33,17 +52,17 @@ export function Post({author, publishedAt, content}) { // dessa forma ai que uso
 
   }
 
-  function handleNewCommentChange() {
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('')
     setNewCommentText(event.target.value)  // o event.target vai me retornar o elemento text area, caso eu queira o valor da text area, eu coloco value no final, ficando dessa maneira "event.target.value". e coloquei esse event dentro da função setNewCommentText, que vai armazenar o valor na minha variável newCommentText.
   }
 
-  function handleNewCommentInvalid() {
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!!')
   }
 
   // função para deletar os comentários
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     //Imutabilidade -> as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
 
     const commentsWithoutDeleteOne = comments.filter(comment => {
